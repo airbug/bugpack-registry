@@ -2,39 +2,42 @@
 // Requires
 //-------------------------------------------------------------------------------
 
-var buildbug        = require("buildbug");
+var buildbug                = require("buildbug");
 
 
 //-------------------------------------------------------------------------------
 // Simplify References
 //-------------------------------------------------------------------------------
 
-var buildProject    = buildbug.buildProject;
-var buildProperties = buildbug.buildProperties;
-var buildTarget     = buildbug.buildTarget;
-var enableModule    = buildbug.enableModule;
-var parallel        = buildbug.parallel;
-var series          = buildbug.series;
-var targetTask      = buildbug.targetTask;
+var buildProject            = buildbug.buildProject;
+var buildProperties         = buildbug.buildProperties;
+var buildTarget             = buildbug.buildTarget;
+var enableModule            = buildbug.enableModule;
+var parallel                = buildbug.parallel;
+var series                  = buildbug.series;
+var targetTask              = buildbug.targetTask;
 
 
 //-------------------------------------------------------------------------------
 // Enable Modules
 //-------------------------------------------------------------------------------
 
-var aws             = enableModule("aws");
-var bugpack         = enableModule('bugpack');
-var bugunit         = enableModule('bugunit');
-var core            = enableModule('core');
-var nodejs          = enableModule('nodejs');
-var uglifyjs        = enableModule("uglifyjs");
+var aws                     = enableModule("aws");
+var bugpack                 = enableModule('bugpack');
+var bugunit                 = enableModule('bugunit');
+var core                    = enableModule('core');
+var nodejs                  = enableModule('nodejs');
+var uglifyjs                = enableModule("uglifyjs");
 
 
 //-------------------------------------------------------------------------------
 // Values
 //-------------------------------------------------------------------------------
 
-var version         = "0.1.0";
+var version                 = "0.1.1";
+var dependencies            = {
+    bugpack: "0.1.1"
+};
 
 
 //-------------------------------------------------------------------------------
@@ -47,11 +50,9 @@ buildProperties({
             name: "bugpack-registry",
             version: version,
             description: "Registry builder for the bugpack package loader",
-            main: "./scripts/bugpack-registry-module.js",
+            main: "./scripts/bugpack-registry-node-module.js",
             author: "Brian Neisler <brian@airbug.com>",
-            dependencies: {
-                bugpack: 'https://s3.amazonaws.com/deploy-airbug/bugpack-0.0.5.tgz'
-            },
+            dependencies: dependencies,
             repository: {
                 type: "git",
                 url: "https://github.com/airbug/bugpack.git"
@@ -67,26 +68,24 @@ buildProperties({
             ]
         },
         sourcePaths: [
+            "../buganno/projects/buganno/js/src",
             "../bugcore/projects/bugcore/js/src",
-            "../bugjs/projects/buganno/js/src",
-            "../bugjs/projects/bugflow/js/src",
-            "../bugjs/projects/bugfs/js/src",
-            "../bugjs/projects/bugmeta/js/src",
-            "../bugjs/projects/bugtrace/js/src",
+            "../bugflow/projects/bugflow/js/src",
+            "../bugfs/projects/bugfs/js/src",
+            "../bugmeta/projects/bugmeta/js/src",
+            "../bugtrace/projects/bugtrace/js/src",
             "./projects/bugpack-registry/js/src"
         ],
         scriptPaths: [
-            "../bugjs/projects/buganno/js/scripts",
-            "./projects/bugpack-registry/js/scripts"
+            "../buganno/projects/buganno/js/scripts",
+            "./projects/bugpack-registry-node/js/scripts"
         ],
         unitTest: {
             packageJson: {
                 name: "bugpack-registry-test",
                 version: version,
-                main: "./scripts/bugpack-registry-module.js",
-                dependencies: {
-                    bugpack: 'https://s3.amazonaws.com/deploy-airbug/bugpack-0.0.5.tgz'
-                },
+                main: "./scripts/bugpack-registry-node-module.js",
+                dependencies: dependencies,
                 scripts: {
                     test: "node ./scripts/bugunit-run.js"
                 }
@@ -100,11 +99,11 @@ buildProperties({
                 "../bugunit/projects/bugunit/js/scripts"
             ],
             testPaths: [
+                "../buganno/projects/buganno/js/test",
                 "../bugcore/projects/bugcore/js/test",
-                "../bugjs/projects/buganno/js/test",
-                "../bugjs/projects/bugflow/js/test",
-                "../bugjs/projects/bugmeta/js/test",
-                "../bugjs/projects/bugtrace/js/test",
+                "../bugflow/projects/bugflow/js/test",
+                "../bugmeta/projects/bugmeta/js/test",
+                "../bugtrace/projects/bugtrace/js/test",
                 "./projects/bugpack-registry/js/test"
             ]
         }
@@ -163,7 +162,7 @@ buildTarget("local").buildFlow(
                         packageVersion: "{{node.packageJson.version}}"
                     }
                 }),
-                targetTask('startNodeModuleTests', {
+                /*targetTask('startNodeModuleTests', {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(
                             buildProject.getProperty("node.packageJson.name"),
@@ -173,7 +172,7 @@ buildTarget("local").buildFlow(
                             modulePath: packedNodePackage.getFilePath()
                         });
                     }
-                }),
+                }),*/
                 targetTask("s3PutFile", {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(buildProject.getProperty("node.packageJson.name"),
@@ -236,7 +235,7 @@ buildTarget("prod").buildFlow(
                         packageVersion: "{{node.unitTest.packageJson.version}}"
                     }
                 }),
-                targetTask('startNodeModuleTests', {
+                /*targetTask('startNodeModuleTests', {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(
                             buildProject.getProperty("node.unitTest.packageJson.name"),
@@ -247,7 +246,7 @@ buildTarget("prod").buildFlow(
                             checkCoverage: true
                         });
                     }
-                })
+                })*/
             ]),
 
             // Create production bugpack-registry package

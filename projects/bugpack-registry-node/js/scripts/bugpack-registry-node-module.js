@@ -1,15 +1,11 @@
 //-------------------------------------------------------------------------------
-// Common Modules
+// Script
 //-------------------------------------------------------------------------------
 
-var bugpack = require('bugpack').context(module);
-
-
-//-------------------------------------------------------------------------------
-// BugPack
-//-------------------------------------------------------------------------------
-
-var BugPackRegistryBuilder = bugpack.require('bugpack.BugPackRegistryBuilder');
+var bugpackApi              = require("bugpack");
+var bugpack                 = bugpackApi.loadContextSync(module);
+bugpack.loadExportSync("bugpack-registry.BugPackRegistryBuilder");
+var BugPackRegistryBuilder  = bugpack.require("bugpack-registry.BugPackRegistryBuilder");
 
 
 //-------------------------------------------------------------------------------

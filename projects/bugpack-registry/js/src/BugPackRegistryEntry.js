@@ -2,9 +2,7 @@
 // Annotations
 //-------------------------------------------------------------------------------
 
-//@Package('bugpack')
-
-//@Export('BugPackRegistryEntry')
+//@Export('bugpack-registry.BugPackRegistryEntry')
 
 //@Require('Class')
 //@Require('IObjectable')
@@ -180,4 +178,4 @@ Class.implement(BugPackRegistryEntry, IObjectable);
 // Exports
 //-------------------------------------------------------------------------------
 
-bugpack.export('bugpack.BugPackRegistryEntry', BugPackRegistryEntry);
+bugpack.export('bugpack-registry.BugPackRegistryEntry', BugPackRegistryEntry);

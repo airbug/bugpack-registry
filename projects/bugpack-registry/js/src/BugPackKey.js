@@ -2,9 +2,7 @@
 // Annotations
 //-------------------------------------------------------------------------------
 
-//@Package('bugpack')
-
-//@Export('BugPackKey')
+//@Export('bugpack-registry.BugPackKey')
 
 //@Require('Class')
 //@Require('Obj')
@@ -29,6 +27,10 @@ var Obj             = bugpack.require('Obj');
 // Declare Class
 //-------------------------------------------------------------------------------
 
+/**
+ * @class
+ * @extends {Obj}
+ */
 var BugPackKey = Class.extend(Obj, {
 
     //-------------------------------------------------------------------------------
@@ -114,4 +116,4 @@ var BugPackKey = Class.extend(Obj, {
 // Exports
 //-------------------------------------------------------------------------------
 
-bugpack.export('bugpack.BugPackKey', BugPackKey);
+bugpack.export('bugpack-registry.BugPackKey', BugPackKey);

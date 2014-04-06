@@ -2,9 +2,7 @@
 // Annotations
 //-------------------------------------------------------------------------------
 
-//@Package('bugpack')
-
-//@Export('BugPackRegistry')
+//@Export('bugpack-registry.BugPackRegistry')
 
 //@Require('Class')
 //@Require('DependencyGraph')
@@ -14,35 +12,39 @@
 //@Require('Obj')
 //@Require('Set')
 //@Require('bugfs.BugFs')
-//@Require('bugpack.BugPackKey')
+//@Require('bugpack-registry.BugPackKey')
 
 
 //-------------------------------------------------------------------------------
 // Common Modules
 //-------------------------------------------------------------------------------
 
-var bugpack         = require('bugpack').context();
+var bugpack                 = require('bugpack').context();
 
 
 //-------------------------------------------------------------------------------
 // BugPack
 //-------------------------------------------------------------------------------
 
-var Class           = bugpack.require('Class');
-var DependencyGraph = bugpack.require('DependencyGraph');
-var IObjectable     = bugpack.require('IObjectable');
-var List            = bugpack.require('List');
-var Map             = bugpack.require('Map');
-var Obj             = bugpack.require('Obj');
-var Set             = bugpack.require('Set');
-var BugFs           = bugpack.require('bugfs.BugFs');
-var BugPackKey      = bugpack.require('bugpack.BugPackKey');
+var Class                   = bugpack.require('Class');
+var DependencyGraph         = bugpack.require('DependencyGraph');
+var IObjectable             = bugpack.require('IObjectable');
+var List                    = bugpack.require('List');
+var Map                     = bugpack.require('Map');
+var Obj                     = bugpack.require('Obj');
+var Set                     = bugpack.require('Set');
+var BugFs                   = bugpack.require('bugfs.BugFs');
+var BugPackKey              = bugpack.require('bugpack-registry.BugPackKey');
 
 
 //-------------------------------------------------------------------------------
 // Declare Class
 //-------------------------------------------------------------------------------
 
+/**
+ * @class
+ * @extends {Obj}
+ */
 var BugPackRegistry = Class.extend(Obj, {
 
     //-------------------------------------------------------------------------------
@@ -261,4 +263,4 @@ Class.implement(BugPackRegistry, IObjectable);
 // Exports
 //-------------------------------------------------------------------------------
 
-bugpack.export('bugpack.BugPackRegistry', BugPackRegistry);
+bugpack.export('bugpack-registry.BugPackRegistry', BugPackRegistry);

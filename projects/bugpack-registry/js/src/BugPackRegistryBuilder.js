@@ -2,21 +2,20 @@
 // Annotations
 //-------------------------------------------------------------------------------
 
-//@Package('bugpack')
-
-//@Export('BugPackRegistryBuilder')
+//@Export('bugpack-registry.BugPackRegistryBuilder')
 
 //@Require('Class')
 //@Require('List')
 //@Require('Map')
 //@Require('Obj')
+//@Require('Proxy')
 //@Require('Set')
-//@Require('buganno.AnnotationRegistryLibraryBuilder')
+//@Require('buganno.BugAnno')
 //@Require('bugflow.BugFlow')
 //@Require('bugfs.BugFs')
 //@Require('bugfs.FileFinder')
-//@Require('bugpack.BugPackRegistry')
-//@Require('bugpack.BugPackRegistryEntry')
+//@Require('bugpack-registry.BugPackRegistry')
+//@Require('bugpack-registry.BugPackRegistryEntry')
 
 
 //-------------------------------------------------------------------------------
@@ -34,27 +33,32 @@ var Class                               = bugpack.require('Class');
 var List                                = bugpack.require('List');
 var Map                                 = bugpack.require('Map');
 var Obj                                 = bugpack.require('Obj');
+var Proxy                               = bugpack.require('Proxy');
 var Set                                 = bugpack.require('Set');
-var AnnotationRegistryLibraryBuilder    = bugpack.require('buganno.AnnotationRegistryLibraryBuilder');
+var BugAnno                             = bugpack.require('buganno.BugAnno');
 var BugFlow                             = bugpack.require('bugflow.BugFlow');
 var BugFs                               = bugpack.require('bugfs.BugFs');
 var FileFinder                          = bugpack.require('bugfs.FileFinder');
-var BugPackRegistry                     = bugpack.require('bugpack.BugPackRegistry');
-var BugPackRegistryEntry                = bugpack.require('bugpack.BugPackRegistryEntry');
+var BugPackRegistry                     = bugpack.require('bugpack-registry.BugPackRegistry');
+var BugPackRegistryEntry                = bugpack.require('bugpack-registry.BugPackRegistryEntry');
 
 
 //-------------------------------------------------------------------------------
 // Simplify References
 //-------------------------------------------------------------------------------
 
-var $series             = BugFlow.$series;
-var $task               = BugFlow.$task;
+var $series                             = BugFlow.$series;
+var $task                               = BugFlow.$task;
 
 
 //-------------------------------------------------------------------------------
 // Declare Class
 //-------------------------------------------------------------------------------
 
+/**
+ * @class
+ * @extends {Obj}
+ */
 var BugPackRegistryBuilder = Class.extend(Obj, {
 
     //-------------------------------------------------------------------------------
@@ -75,9 +79,9 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
 
         /**
          * @private
-         * @type {AnnotationRegistryLibraryBuilder}
+         * @type {BugAnno}
          */
-        this.annotationRegistryLibraryBuilder = new AnnotationRegistryLibraryBuilder();
+        this.bugAnno    = new BugAnno();
     },
 
 
@@ -87,10 +91,10 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
 
     /**
      * @param {(string | Path)} registryRoot
-     * @param {List.<(string | RegExp)>} ignorePatterns
-     * @param {function(Error, BugPackRegistry=)} callback
+     * @param {Array.<(string | RegExp)>} ignorePatterns
+     * @param {function(Throwable, BugPackRegistry=)} callback
      */
-    build: function(registryRoot, ignorePatterns, callback) {
+    buildRegistry: function(registryRoot, ignorePatterns, callback) {
         var _this               = this;
         var registryRootPath    = BugFs.path(registryRoot);
         var bugPackRegistry     = null;
@@ -106,7 +110,7 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
                 });
             }),
             $task(function(flow) {
-                _this.annotationRegistryLibraryBuilder.build(filePaths, function(error, annotationRegistryLibrary) {
+                _this.bugAnno.parse(filePaths, function(error, annotationRegistryLibrary) {
                     if (!error) {
                         bugPackRegistry = _this.generateBugPackRegistry(registryRootPath, annotationRegistryLibrary);
                     }
@@ -120,6 +124,20 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
                 callback(error);
             }
         });
+    },
+
+    /**
+     * @param {function(Throwable=)} callback
+     */
+    deinitialize: function(callback) {
+        this.bugAnno.deinitialize(callback);
+    },
+
+    /**
+     * @param {function(Throwable=)} callback
+     */
+    initialize: function(callback) {
+        this.bugAnno.initialize(callback);
     },
 
 
@@ -216,22 +234,44 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
 
 
 //-------------------------------------------------------------------------------
-// Static Methods
+// Private Static Variables
 //-------------------------------------------------------------------------------
 
 /**
- * @param {string} registryRoot
- * @param {Array.<(string | RegExp)>} ignorePatterns
- * @param {function(Error, BugPackRegistry)} callback
+ * @private
+ * @type {BugPackRegistryBuilder}
  */
-BugPackRegistryBuilder.buildRegistry = function(registryRoot, ignorePatterns, callback) {
-    var registryBuilder = new BugPackRegistryBuilder();
-    registryBuilder.build(registryRoot, ignorePatterns, callback);
+BugPackRegistryBuilder.instance = null;
+
+
+//-------------------------------------------------------------------------------
+// Public Static Methods
+//-------------------------------------------------------------------------------
+
+/**
+ * @return {BugPackRegistryBuilder}
+ */
+BugPackRegistryBuilder.getInstance = function() {
+    if (BugPackRegistryBuilder.instance === null) {
+        BugPackRegistryBuilder.instance = new BugPackRegistryBuilder();
+    }
+    return BugPackRegistryBuilder.instance;
 };
+
+
+//-------------------------------------------------------------------------------
+// Static Proxy
+//-------------------------------------------------------------------------------
+
+Proxy.proxy(BugPackRegistryBuilder, Proxy.method(BugPackRegistryBuilder.getInstance), [
+    "buildRegistry",
+    "deinitialize",
+    "initialize"
+]);
 
 
 //-------------------------------------------------------------------------------
 // Exports
 //-------------------------------------------------------------------------------
 
-bugpack.export('bugpack.BugPackRegistryBuilder', BugPackRegistryBuilder);
+bugpack.export('bugpack-registry.BugPackRegistryBuilder', BugPackRegistryBuilder);
