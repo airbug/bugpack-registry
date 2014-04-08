@@ -34,9 +34,9 @@ var uglifyjs                = enableModule("uglifyjs");
 // Values
 //-------------------------------------------------------------------------------
 
-var version                 = "0.1.1";
+var version                 = "0.1.2";
 var dependencies            = {
-    bugpack: "0.1.1"
+    bugpack: "0.1.5"
 };
 
 
@@ -80,6 +80,7 @@ buildProperties({
             "../buganno/projects/buganno/js/scripts",
             "./projects/bugpack-registry-node/js/scripts"
         ],
+        readmePath: "./README.md",
         unitTest: {
             packageJson: {
                 name: "bugpack-registry-test",
@@ -102,6 +103,7 @@ buildProperties({
                 "../buganno/projects/buganno/js/test",
                 "../bugcore/projects/bugcore/js/test",
                 "../bugflow/projects/bugflow/js/test",
+                "../bugfs/projects/bugfs/js/test",
                 "../bugmeta/projects/bugmeta/js/test",
                 "../bugtrace/projects/bugtrace/js/test",
                 "./projects/bugpack-registry/js/test"
@@ -136,6 +138,7 @@ buildTarget("local").buildFlow(
                 targetTask("createNodePackage", {
                     properties: {
                         packageJson: buildProject.getProperty("node.packageJson"),
+                        readmePath: buildProject.getProperty("node.readmePath"),
                         sourcePaths: buildProject.getProperty("node.sourcePaths").concat(
                             buildProject.getProperty("node.unitTest.sourcePaths")
                         ),
@@ -162,7 +165,7 @@ buildTarget("local").buildFlow(
                         packageVersion: "{{node.packageJson.version}}"
                     }
                 }),
-                /*targetTask('startNodeModuleTests', {
+                targetTask('startNodeModuleTests', {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(
                             buildProject.getProperty("node.packageJson.name"),
@@ -172,7 +175,7 @@ buildTarget("local").buildFlow(
                             modulePath: packedNodePackage.getFilePath()
                         });
                     }
-                }),*/
+                }),
                 targetTask("s3PutFile", {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(buildProject.getProperty("node.packageJson.name"),
@@ -209,6 +212,7 @@ buildTarget("prod").buildFlow(
                 targetTask('createNodePackage', {
                     properties: {
                         packageJson: buildProject.getProperty("node.unitTest.packageJson"),
+                        readmePath: buildProject.getProperty("node.readmePath"),
                         sourcePaths: buildProject.getProperty("node.sourcePaths").concat(
                             buildProject.getProperty("node.unitTest.sourcePaths")
                         ),
@@ -235,7 +239,7 @@ buildTarget("prod").buildFlow(
                         packageVersion: "{{node.unitTest.packageJson.version}}"
                     }
                 }),
-                /*targetTask('startNodeModuleTests', {
+                targetTask('startNodeModuleTests', {
                     init: function(task, buildProject, properties) {
                         var packedNodePackage = nodejs.findPackedNodePackage(
                             buildProject.getProperty("node.unitTest.packageJson.name"),
@@ -246,7 +250,7 @@ buildTarget("prod").buildFlow(
                             checkCoverage: true
                         });
                     }
-                })*/
+                })
             ]),
 
             // Create production bugpack-registry package
@@ -255,6 +259,7 @@ buildTarget("prod").buildFlow(
                 targetTask('createNodePackage', {
                     properties: {
                         packageJson: buildProject.getProperty("node.packageJson"),
+                        readmePath: buildProject.getProperty("node.readmePath"),
                         sourcePaths: buildProject.getProperty("node.sourcePaths"),
                         scriptPaths: buildProject.getProperty("node.scriptPaths")
                     }
