@@ -122,7 +122,7 @@ var BugPackRegistryEntry = Class.extend(Obj, {
     },
 
     /**
-     * @return {string}
+     * @return {Path}
      */
     getResolvedPath: function() {
         return BugFs.resolvePaths([this.bugPackRegistry.getRegistryRootPath(), this.relativePath]);
@@ -145,7 +145,7 @@ var BugPackRegistryEntry = Class.extend(Obj, {
      */
     toObject: function() {
         return {
-            path: this.relativePath,
+            path: this.relativePath.getGivenPath(),
             exports: this.exportSet.toArray(),
             requires: this.requireSet.toArray(),
             autoload: this.autoload

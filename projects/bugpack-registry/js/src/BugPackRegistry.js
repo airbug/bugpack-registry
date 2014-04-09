@@ -6,6 +6,7 @@
 
 //@Require('Class')
 //@Require('DependencyGraph')
+//@Require('Exception')
 //@Require('IObjectable')
 //@Require('List')
 //@Require('Map')
@@ -28,6 +29,7 @@ var bugpack                 = require('bugpack').context();
 
 var Class                   = bugpack.require('Class');
 var DependencyGraph         = bugpack.require('DependencyGraph');
+var Exception               = bugpack.require('Exception');
 var IObjectable             = bugpack.require('IObjectable');
 var List                    = bugpack.require('List');
 var Map                     = bugpack.require('Map');
@@ -132,8 +134,12 @@ var BugPackRegistry = Class.extend(Obj, {
                     //NOTE BRN: It is ok for files to require something they export. This way we can concat files together
                     // without them breaking. We simply ignore registry entries that require themselves.
 
-                    if (!bugPackRegistryEntry.equals(requiredRegistryEntry)) {
-                        dependencyGraph.addDependency(bugPackRegistryEntry, requiredRegistryEntry);
+                    if (requiredRegistryEntry) {
+                        if (!bugPackRegistryEntry.equals(requiredRegistryEntry)) {
+                            dependencyGraph.addDependency(bugPackRegistryEntry, requiredRegistryEntry);
+                        }
+                    } else {
+                        throw new Exception("MissingDependency", {}, "Cannot find required export in registry '" + bugPackKey.getKey() + "' required by '" + bugPackRegistryEntry.getRelativePath().getAbsolutePath() + "'");
                     }
                 }
             });
@@ -166,7 +172,7 @@ var BugPackRegistry = Class.extend(Obj, {
     toObject: function() {
         var registryObject = {};
         this.registryEntries.forEach(function(registryEntry) {
-            registryObject[registryEntry.getRelativePath()] = registryEntry.toObject();
+            registryObject[registryEntry.getRelativePath().getGivenPath()] = registryEntry.toObject();
         });
         return registryObject;
     },
@@ -207,7 +213,7 @@ var BugPackRegistry = Class.extend(Obj, {
             }
             this.sourceFilePathToRegistryEntryMap.put(bugPackRegistryEntry.getRelativePath(), bugPackRegistryEntry);
         } else {
-            throw new Error("The source file path '" + bugPackRegistryEntry.getRelativePath() + "' has already been registered");
+            throw new Error("The source file path '" + bugPackRegistryEntry.getRelativePath().getAbsolutePath() + "' has already been registered");
         }
     },
 
@@ -232,7 +238,7 @@ var BugPackRegistry = Class.extend(Obj, {
      * @return {BugPackRegistryEntry}
      */
     getEntryBySourceFilePath: function(sourceFilePath) {
-        var sourceFile = BugFs.path(sourceFilePath).getAbsolutePath();
+        var sourceFile = BugFs.path(sourceFilePath);
         return this.sourceFilePathToRegistryEntryMap.get(sourceFile);
     },
 

@@ -221,7 +221,7 @@ var BugPackRegistryBuilder = Class.extend(Obj, {
      */
     generateBugPackRegistryEntry: function(bugPackRegistry, annotationRegistry) {
         var bugPackRegistryEntry = new BugPackRegistryEntry(bugPackRegistry, 
-            BugFs.relativePath(bugPackRegistry.getRegistryRootPath(), annotationRegistry.getFilePath()));
+            BugFs.path(BugFs.relativePath(bugPackRegistry.getRegistryRootPath(), annotationRegistry.getFilePath())));
         var exportSet   = this.findExportSet(annotationRegistry);
         var requireSet  = this.findRequireSet(annotationRegistry);
         var autoload    = this.findAutoload(annotationRegistry);
