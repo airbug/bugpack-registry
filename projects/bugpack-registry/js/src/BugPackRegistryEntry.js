@@ -33,6 +33,10 @@ var BugFs           = bugpack.require('bugfs.BugFs');
 // Declare Class
 //-------------------------------------------------------------------------------
 
+/**
+ * @class
+ * @extends {Obj}
+ */
 var BugPackRegistryEntry = Class.extend(Obj, {
 
     //-------------------------------------------------------------------------------
@@ -40,7 +44,9 @@ var BugPackRegistryEntry = Class.extend(Obj, {
     //-------------------------------------------------------------------------------
 
     /**
-     *
+     * @constructs
+     * @param {BugPackRegistry} bugPackRegistry
+     * @param {Path} relativePath
      */
     _constructor: function(bugPackRegistry, relativePath) {
 

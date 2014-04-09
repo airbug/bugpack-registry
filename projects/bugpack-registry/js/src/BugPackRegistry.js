@@ -101,7 +101,7 @@ var BugPackRegistry = Class.extend(Obj, {
     //-------------------------------------------------------------------------------
 
     /**
-     * @return {List.<BugPackRegistryEntry>)
+     * @return {List.<BugPackRegistryEntry>}
      */
     getRegistryEntriesInDependentOrder: function() {
         var _this = this;
