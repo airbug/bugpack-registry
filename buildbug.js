@@ -34,9 +34,9 @@ var uglifyjs                = enableModule("uglifyjs");
 // Values
 //-------------------------------------------------------------------------------
 
-var version                 = "0.1.4";
+var version                 = "0.1.5";
 var dependencies            = {
-    bugpack: "0.1.6"
+    bugpack: "0.1.12"
 };
 
 
