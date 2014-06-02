@@ -7,7 +7,7 @@
 //@Require('Class')
 //@Require('bugpack-registry.BugPackRegistryBuilder')
 //@Require('bugmeta.BugMeta')
-//@Require('bugunit.TestAnnotation')
+//@Require('bugunit.TestTag')
 //@Require('bugyarn.BugYarn')
 
 
@@ -24,7 +24,7 @@ require('bugpack').context("*", function(bugpack) {
     var Class                   = bugpack.require('Class');
     var BugPackRegistryBuilder  = bugpack.require('bugpack-registry.BugPackRegistryBuilder');
     var BugMeta                 = bugpack.require('bugmeta.BugMeta');
-    var TestAnnotation          = bugpack.require('bugunit.TestAnnotation');
+    var TestTag          = bugpack.require('bugunit.TestTag');
     var BugYarn                 = bugpack.require('bugyarn.BugYarn');
 
 
@@ -34,7 +34,7 @@ require('bugpack').context("*", function(bugpack) {
 
     var bugmeta                 = BugMeta.context();
     var bugyarn                 = BugYarn.context();
-    var test                    = TestAnnotation.test;
+    var test                    = TestTag.test;
 
 
     //-------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ require('bugpack').context("*", function(bugpack) {
             var yarn = bugyarn.yarn(this);
             yarn.spin([
                 "setupTestBugPackRegistryBuilder",
-                "setupTestAnnotationRegistry"
+                "setupTestTagRegistry"
             ]);
             var autoloadAnnotation = yarn.weave("testBugAnnotation", ["Autoload", []]);
             this.annotationRegistry.addAnnotation(autoloadAnnotation);
@@ -114,10 +114,10 @@ require('bugpack').context("*", function(bugpack) {
     // BugMeta
     //-------------------------------------------------------------------------------
 
-    bugmeta.annotate(bugPackRegistryBuilderInstantiationTest).with(
+    bugmeta.tag(bugPackRegistryBuilderInstantiationTest).with(
         test().name("BugPackRegistryBuilder - instantiation test")
     );
-    bugmeta.annotate(bugPackRegistryBuilderFindAutoloadSuccessTest).with(
+    bugmeta.tag(bugPackRegistryBuilderFindAutoloadSuccessTest).with(
         test().name("BugPackRegistryBuilder - #findAutoload success test")
     );
 });
