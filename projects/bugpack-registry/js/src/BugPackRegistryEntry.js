@@ -12,176 +12,179 @@
 
 
 //-------------------------------------------------------------------------------
-// Common Modules
+// Context
 //-------------------------------------------------------------------------------
 
-var bugpack         = require('bugpack').context();
-
-
-//-------------------------------------------------------------------------------
-// BugPack
-//-------------------------------------------------------------------------------
-
-var Class           = bugpack.require('Class');
-var IObjectable     = bugpack.require('IObjectable');
-var Obj             = bugpack.require('Obj');
-var Set             = bugpack.require('Set');
-var BugFs           = bugpack.require('bugfs.BugFs');
-
-
-//-------------------------------------------------------------------------------
-// Declare Class
-//-------------------------------------------------------------------------------
-
-/**
- * @class
- * @extends {Obj}
- */
-var BugPackRegistryEntry = Class.extend(Obj, {
+require('bugpack').context("*", function(bugpack) {
 
     //-------------------------------------------------------------------------------
-    // Constructor
+    // BugPack
+    //-------------------------------------------------------------------------------
+
+    var Class           = bugpack.require('Class');
+    var IObjectable     = bugpack.require('IObjectable');
+    var Obj             = bugpack.require('Obj');
+    var Set             = bugpack.require('Set');
+    var BugFs           = bugpack.require('bugfs.BugFs');
+
+
+    //-------------------------------------------------------------------------------
+    // Declare Class
     //-------------------------------------------------------------------------------
 
     /**
-     * @constructs
-     * @param {BugPackRegistry} bugPackRegistry
-     * @param {Path} relativePath
+     * @class
+     * @extends {Obj}
      */
-    _constructor: function(bugPackRegistry, relativePath) {
+    var BugPackRegistryEntry = Class.extend(Obj, {
 
-        this._super();
+        _name: "bugpack-registry.BugPackRegistryEntry",
 
 
         //-------------------------------------------------------------------------------
-        // Private Properties
+        // Constructor
         //-------------------------------------------------------------------------------
 
         /**
-         * @private
-         * @type {boolean}
+         * @constructs
+         * @param {BugPackRegistry} bugPackRegistry
+         * @param {Path} relativePath
          */
-        this.autoload           = false;
+        _constructor: function(bugPackRegistry, relativePath) {
+
+            this._super();
+
+
+            //-------------------------------------------------------------------------------
+            // Private Properties
+            //-------------------------------------------------------------------------------
+
+            /**
+             * @private
+             * @type {boolean}
+             */
+            this.autoload           = false;
+
+            /**
+             * @private
+             * @type {BugPackRegistry}
+             */
+            this.bugPackRegistry    = bugPackRegistry;
+
+            /**
+             * @private
+             * @type {Set.<string>}
+             */
+            this.exportSet          = new Set();
+
+            /**
+             * @private
+             * @type {Path}
+             */
+            this.relativePath       = relativePath;
+
+            /**
+             * @private
+             * @type {Set.<string>}
+             */
+            this.requireSet        = new Set();
+        },
+
+
+        //-------------------------------------------------------------------------------
+        // Getters and Setters
+        //-------------------------------------------------------------------------------
 
         /**
-         * @private
-         * @type {BugPackRegistry}
+         * @return {boolean}
          */
-        this.bugPackRegistry    = bugPackRegistry;
+        getAutoload: function() {
+            return this.autoload;
+        },
 
         /**
-         * @private
-         * @type {Set.<string>}
+         * @param {boolean} autoload
          */
-        this.exportSet          = new Set();
+        setAutoload: function(autoload) {
+            this.autoload = autoload;
+        },
 
         /**
-         * @private
-         * @type {Path}
+         * @return {Set.<string>}
          */
-        this.relativePath       = relativePath;
+        getExportSet: function() {
+            return this.exportSet;
+        },
 
         /**
-         * @private
-         * @type {Set.<string>}
+         * @return {Path}
          */
-        this.requireSet        = new Set();
-    },
+        getRelativePath: function() {
+            return this.relativePath;
+        },
+
+        /**
+         * @return {Path}
+         */
+        getResolvedPath: function() {
+            return BugFs.resolvePaths([this.bugPackRegistry.getRegistryRootPath(), this.relativePath]);
+        },
+
+        /**
+         * @return {Set.<string>}
+         */
+        getRequireSet: function() {
+            return this.requireSet;
+        },
+
+
+        //-------------------------------------------------------------------------------
+        // IObjectable Implementation
+        //-------------------------------------------------------------------------------
+
+        /**
+         * @return {Object}
+         */
+        toObject: function() {
+            return {
+                path: this.relativePath.getGivenPath(),
+                exports: this.exportSet.toArray(),
+                requires: this.requireSet.toArray(),
+                autoload: this.autoload
+            };
+        },
+
+
+        //-------------------------------------------------------------------------------
+        // Public Methods
+        //-------------------------------------------------------------------------------
+
+        /**
+         * @param {(Array.<string> | Collection.<string>)} exports
+         */
+        addAllExports: function(exports) {
+            this.exportSet.addAll(exports);
+        },
+
+        /**
+         * @param {(Array.<string> | Collection.<string>)} requires
+         */
+        addAllRequires: function(requires) {
+            this.requireSet.addAll(requires);
+        }
+    });
 
 
     //-------------------------------------------------------------------------------
-    // Getters and Setters
+    // Interfaces
     //-------------------------------------------------------------------------------
 
-    /**
-     * @return {boolean}
-     */
-    getAutoload: function() {
-        return this.autoload;
-    },
-
-    /**
-     * @param {boolean} autoload
-     */
-    setAutoload: function(autoload) {
-        this.autoload = autoload;
-    },
-
-    /**
-     * @return {Set.<string>}
-     */
-    getExportSet: function() {
-        return this.exportSet;
-    },
-
-    /**
-     * @return {Path}
-     */
-    getRelativePath: function() {
-        return this.relativePath;
-    },
-
-    /**
-     * @return {Path}
-     */
-    getResolvedPath: function() {
-        return BugFs.resolvePaths([this.bugPackRegistry.getRegistryRootPath(), this.relativePath]);
-    },
-
-    /**
-     * @return {Set.<string>}
-     */
-    getRequireSet: function() {
-        return this.requireSet;
-    },
+    Class.implement(BugPackRegistryEntry, IObjectable);
 
 
     //-------------------------------------------------------------------------------
-    // IObjectable Implementation
+    // Exports
     //-------------------------------------------------------------------------------
 
-    /**
-     * @return {Object}
-     */
-    toObject: function() {
-        return {
-            path: this.relativePath.getGivenPath(),
-            exports: this.exportSet.toArray(),
-            requires: this.requireSet.toArray(),
-            autoload: this.autoload
-        };
-    },
-
-
-    //-------------------------------------------------------------------------------
-    // Public Methods
-    //-------------------------------------------------------------------------------
-
-    /**
-     * @param {(Array.<string> | Collection.<string>)} exports
-     */
-    addAllExports: function(exports) {
-        this.exportSet.addAll(exports);
-    },
-
-    /**
-     * @param {(Array.<string> | Collection.<string>)} requires
-     */
-    addAllRequires: function(requires) {
-        this.requireSet.addAll(requires);
-    }
+    bugpack.export('bugpack-registry.BugPackRegistryEntry', BugPackRegistryEntry);
 });
-
-
-//-------------------------------------------------------------------------------
-// Interfaces
-//-------------------------------------------------------------------------------
-
-Class.implement(BugPackRegistryEntry, IObjectable);
-
-
-//-------------------------------------------------------------------------------
-// Exports
-//-------------------------------------------------------------------------------
-
-bugpack.export('bugpack-registry.BugPackRegistryEntry', BugPackRegistryEntry);

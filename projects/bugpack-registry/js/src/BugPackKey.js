@@ -9,111 +9,114 @@
 
 
 //-------------------------------------------------------------------------------
-// Common Modules
+// Context
 //-------------------------------------------------------------------------------
 
-var bugpack         = require('bugpack').context();
-
-
-//-------------------------------------------------------------------------------
-// BugPack
-//-------------------------------------------------------------------------------
-
-var Class           = bugpack.require('Class');
-var Obj             = bugpack.require('Obj');
-
-
-//-------------------------------------------------------------------------------
-// Declare Class
-//-------------------------------------------------------------------------------
-
-/**
- * @class
- * @extends {Obj}
- */
-var BugPackKey = Class.extend(Obj, {
+require('bugpack').context("*", function(bugpack) {
 
     //-------------------------------------------------------------------------------
-    // Constructor
+    // BugPack
+    //-------------------------------------------------------------------------------
+
+    var Class           = bugpack.require('Class');
+    var Obj             = bugpack.require('Obj');
+
+
+    //-------------------------------------------------------------------------------
+    // Declare Class
     //-------------------------------------------------------------------------------
 
     /**
-     * @constructs
-     * @param {string} key
+     * @class
+     * @extends {Obj}
      */
-    _constructor: function(key) {
+    var BugPackKey = Class.extend(Obj, {
 
-        this._super();
+        _name: "bugpack-registry.BugPackKey",
 
 
         //-------------------------------------------------------------------------------
-        // Private Properties
+        // Constructor
         //-------------------------------------------------------------------------------
 
         /**
-         * @private
-         * @type {string}
+         * @constructs
+         * @param {string} key
          */
-        this.key = key;
+        _constructor: function(key) {
 
-        var keyParts = key.split('.');
-        var packageName = ".";
-        var exportName = keyParts.pop();
-        if (keyParts.length > 0) {
-            packageName = keyParts.join('.');
+            this._super();
+
+
+            //-------------------------------------------------------------------------------
+            // Private Properties
+            //-------------------------------------------------------------------------------
+
+            /**
+             * @private
+             * @type {string}
+             */
+            this.key = key;
+
+            var keyParts = key.split('.');
+            var packageName = ".";
+            var exportName = keyParts.pop();
+            if (keyParts.length > 0) {
+                packageName = keyParts.join('.');
+            }
+
+            /**
+             * @private
+             * @type {string}
+             */
+            this.exportName = exportName;
+
+            /**
+             * @private
+             * @type {String}
+             */
+            this.packageName = packageName;
+        },
+
+
+        //-------------------------------------------------------------------------------
+        // Getters and Setters
+        //-------------------------------------------------------------------------------
+
+
+        /**
+         * @return {string}
+         */
+        getKey: function() {
+            return this.key;
+        },
+
+        /**
+         * @return {string}
+         */
+        getExportName: function() {
+            return this.exportName;
+        },
+
+        /**
+         * @return {string}
+         */
+        getPackageName: function() {
+            return this.packageName;
+        },
+
+        /**
+         * @return {boolean}
+         */
+        isWildCard: function() {
+            return (this.exportName === "*");
         }
-
-        /**
-         * @private
-         * @type {string}
-         */
-        this.exportName = exportName;
-
-        /**
-         * @private
-         * @type {String}
-         */
-        this.packageName = packageName;
-    },
+    });
 
 
     //-------------------------------------------------------------------------------
-    // Getters and Setters
+    // Exports
     //-------------------------------------------------------------------------------
 
-
-    /**
-     * @return {string}
-     */
-    getKey: function() {
-        return this.key;
-    },
-
-    /**
-     * @return {string}
-     */
-    getExportName: function() {
-        return this.exportName;
-    },
-
-    /**
-     * @return {string}
-     */
-    getPackageName: function() {
-        return this.packageName;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isWildCard: function() {
-        return (this.exportName === "*");
-    }
+    bugpack.export('bugpack-registry.BugPackKey', BugPackKey);
 });
-
-
-//-------------------------------------------------------------------------------
-// Exports
-//-------------------------------------------------------------------------------
-
-bugpack.export('bugpack-registry.BugPackKey', BugPackKey);
