@@ -94,7 +94,7 @@ require('bugpack').context("*", function(bugpack) {
                 "setupTestBugPackRegistryBuilder",
                 "setupTestTagRegistry"
             ]);
-            var autoloadAnnotation = yarn.weave("testBugAnnotation", ["Autoload", []]);
+            var autoloadAnnotation = yarn.weave("testAnnotation", ["Autoload", []]);
             this.annotationRegistry.addAnnotation(autoloadAnnotation);
         },
 
