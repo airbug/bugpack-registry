@@ -160,14 +160,16 @@ buildTarget("local").buildFlow(
                 targetTask("createNodePackage", {
                     properties: {
                         packageJson: buildProject.getProperty("node.packageJson"),
-                        readmePath: buildProject.getProperty("node.readmePath"),
-                        sourcePaths: buildProject.getProperty("node.sourcePaths").concat(
-                            buildProject.getProperty("node.unitTest.sourcePaths")
-                        ),
-                        scriptPaths: buildProject.getProperty("node.scriptPaths").concat(
-                            buildProject.getProperty("node.unitTest.scriptPaths")
-                        ),
-                        testPaths: buildProject.getProperty("node.unitTest.testPaths")
+                        packagePaths: {
+                            "./": [buildProject.getProperty("node.readmePath")],
+                            "./lib": buildProject.getProperty("node.sourcePaths").concat(
+                                buildProject.getProperty("node.unitTest.sourcePaths")
+                            ),
+                            "./scripts": buildProject.getProperty("node.scriptPaths").concat(
+                                buildProject.getProperty("node.unitTest.scriptPaths")
+                            ),
+                            "./test": buildProject.getProperty("node.unitTest.testPaths")
+                        }
                     }
                 }),
                 targetTask('generateBugPackRegistry', {
@@ -248,14 +250,16 @@ buildTarget("prod").buildFlow(
                 targetTask('createNodePackage', {
                     properties: {
                         packageJson: buildProject.getProperty("node.unitTest.packageJson"),
-                        readmePath: buildProject.getProperty("node.readmePath"),
-                        sourcePaths: buildProject.getProperty("node.sourcePaths").concat(
-                            buildProject.getProperty("node.unitTest.sourcePaths")
-                        ),
-                        scriptPaths: buildProject.getProperty("node.scriptPaths").concat(
-                            buildProject.getProperty("node.unitTest.scriptPaths")
-                        ),
-                        testPaths: buildProject.getProperty("node.unitTest.testPaths")
+                        packagePaths: {
+                            "./": [buildProject.getProperty("node.readmePath")],
+                            "./lib": buildProject.getProperty("node.sourcePaths").concat(
+                                buildProject.getProperty("node.unitTest.sourcePaths")
+                            ),
+                            "./scripts": buildProject.getProperty("node.scriptPaths").concat(
+                                buildProject.getProperty("node.unitTest.scriptPaths")
+                            ),
+                            "./test": buildProject.getProperty("node.unitTest.testPaths")
+                        }
                     }
                 }),
                 targetTask('generateBugPackRegistry', {
@@ -295,9 +299,11 @@ buildTarget("prod").buildFlow(
                 targetTask('createNodePackage', {
                     properties: {
                         packageJson: buildProject.getProperty("node.packageJson"),
-                        readmePath: buildProject.getProperty("node.readmePath"),
-                        sourcePaths: buildProject.getProperty("node.sourcePaths"),
-                        scriptPaths: buildProject.getProperty("node.scriptPaths")
+                        packagePaths: {
+                            "./": [buildProject.getProperty("node.readmePath")],
+                            "./lib": buildProject.getProperty("node.sourcePaths"),
+                            "./scripts": buildProject.getProperty("node.scriptPaths")
+                        }
                     }
                 }),
                 targetTask('generateBugPackRegistry', {
