@@ -11,6 +11,7 @@ var buildbug                = require("buildbug");
 
 var buildProject            = buildbug.buildProject;
 var buildProperties         = buildbug.buildProperties;
+var buildScript             = buildbug.buildScript;
 var buildTarget             = buildbug.buildTarget;
 var enableModule            = buildbug.enableModule;
 var parallel                = buildbug.parallel;
@@ -26,6 +27,7 @@ var aws                     = enableModule("aws");
 var bugpack                 = enableModule('bugpack');
 var bugunit                 = enableModule('bugunit');
 var core                    = enableModule('core');
+var lintbug                 = enableModule("lintbug");
 var nodejs                  = enableModule('nodejs');
 var uglifyjs                = enableModule("uglifyjs");
 
@@ -70,10 +72,8 @@ buildProperties({
         sourcePaths: [
             "../buganno/projects/buganno/js/src",
             "../bugcore/projects/bugcore/js/src",
-            "../bugflow/projects/bugflow/js/src",
             "../bugfs/projects/bugfs/js/src",
             "../bugmeta/projects/bugmeta/js/src",
-            "../bugtrace/projects/bugtrace/js/src",
             "./projects/bugpack-registry/js/src"
         ],
         scriptPaths: [
@@ -102,13 +102,22 @@ buildProperties({
             testPaths: [
                 "../buganno/projects/buganno/js/test",
                 "../bugcore/projects/bugcore/js/test",
-                "../bugflow/projects/bugflow/js/test",
                 "../bugfs/projects/bugfs/js/test",
                 "../bugmeta/projects/bugmeta/js/test",
-                "../bugtrace/projects/bugtrace/js/test",
                 "./projects/bugpack-registry/js/test"
             ]
         }
+    },
+    lint: {
+        targetPaths: [
+            "."
+        ],
+        ignorePatterns: [
+            ".*\\.buildbug$",
+            ".*\\.bugunit$",
+            ".*\\.git$",
+            ".*node_modules$"
+        ]
     }
 });
 
@@ -130,9 +139,22 @@ buildTarget("clean").buildFlow(
 //-------------------------------------------------------------------------------
 
 buildTarget("local").buildFlow(
-
     series([
         targetTask("clean"),
+        targetTask('lint', {
+            properties: {
+                targetPaths: buildProject.getProperty("lint.targetPaths"),
+                ignores: buildProject.getProperty("lint.ignorePatterns"),
+                lintTasks: [
+                    "cleanupExtraSpacingAtEndOfLines",
+                    "ensureNewLineEnding",
+                    "indentEqualSignsForPreClassVars",
+                    "orderBugpackRequires",
+                    "orderRequireAnnotations",
+                    "updateCopyright"
+                ]
+            }
+        }),
         parallel([
             series([
                 targetTask("createNodePackage", {
@@ -204,6 +226,20 @@ buildTarget("local").buildFlow(
 buildTarget("prod").buildFlow(
     series([
         targetTask("clean"),
+        targetTask('lint', {
+            properties: {
+                targetPaths: buildProject.getProperty("lint.targetPaths"),
+                ignores: buildProject.getProperty("lint.ignorePatterns"),
+                lintTasks: [
+                    "cleanupExtraSpacingAtEndOfLines",
+                    "ensureNewLineEnding",
+                    "indentEqualSignsForPreClassVars",
+                    "orderBugpackRequires",
+                    "orderRequireAnnotations",
+                    "updateCopyright"
+                ]
+            }
+        }),
         parallel([
 
             //Create test bugpack-registry package
@@ -314,3 +350,16 @@ buildTarget("prod").buildFlow(
     ])
 );
 
+
+//-------------------------------------------------------------------------------
+// Build Scripts
+//-------------------------------------------------------------------------------
+
+buildScript({
+    dependencies: [
+        "bugcore",
+        "bugflow",
+        "bugfs"
+    ],
+    script: "./lintbug.js"
+});

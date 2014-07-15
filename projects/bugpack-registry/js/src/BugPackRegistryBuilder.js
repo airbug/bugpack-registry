@@ -5,13 +5,14 @@
 //@Export('bugpack-registry.BugPackRegistryBuilder')
 
 //@Require('Class')
+//@Require('Exception')
 //@Require('List')
 //@Require('Map')
 //@Require('Obj')
 //@Require('Proxy')
 //@Require('Set')
 //@Require('buganno.BugAnno')
-//@Require('bugflow.BugFlow')
+//@Require('Flows')
 //@Require('bugfs.BugFs')
 //@Require('bugfs.FileFinder')
 //@Require('bugpack-registry.BugPackRegistry')
@@ -29,13 +30,14 @@ require('bugpack').context("*", function(bugpack) {
     //-------------------------------------------------------------------------------
 
     var Class                               = bugpack.require('Class');
+    var Exception                           = bugpack.require('Exception');
     var List                                = bugpack.require('List');
     var Map                                 = bugpack.require('Map');
     var Obj                                 = bugpack.require('Obj');
     var Proxy                               = bugpack.require('Proxy');
     var Set                                 = bugpack.require('Set');
     var BugAnno                             = bugpack.require('buganno.BugAnno');
-    var BugFlow                             = bugpack.require('bugflow.BugFlow');
+    var Flows                             = bugpack.require('Flows');
     var BugFs                               = bugpack.require('bugfs.BugFs');
     var FileFinder                          = bugpack.require('bugfs.FileFinder');
     var BugPackRegistry                     = bugpack.require('bugpack-registry.BugPackRegistry');
@@ -46,8 +48,8 @@ require('bugpack').context("*", function(bugpack) {
     // Simplify References
     //-------------------------------------------------------------------------------
 
-    var $series                             = BugFlow.$series;
-    var $task                               = BugFlow.$task;
+    var $series                             = Flows.$series;
+    var $task                               = Flows.$task;
 
 
     //-------------------------------------------------------------------------------
@@ -175,8 +177,12 @@ require('bugpack').context("*", function(bugpack) {
                 var type = annotation.getAnnotationType();
                 var argumentList = annotation.getArgumentList();
                 if (type === 'Export') {
-                    var exportName = argumentList.getAt(0);
-                    exportSet.add(exportName);
+                    if (!argumentList.isEmpty()) {
+                        var exportName = argumentList.getAt(0);
+                        exportSet.add(exportName);
+                    } else {
+                        throw new Exception("NoExportName", {}, "Export annotation does not have a name provided in file '" + annotationRegistry.getFilePath().getAbsolutePath() + "'");
+                    }
                 }
             });
             return exportSet;
@@ -193,8 +199,12 @@ require('bugpack').context("*", function(bugpack) {
                 var type = annotation.getAnnotationType();
                 var argumentList = annotation.getArgumentList();
                 if (type === 'Require') {
-                    var requireName = argumentList.getAt(0);
-                    requireSet.add(requireName);
+                    if (!argumentList.isEmpty()) {
+                        var requireName = argumentList.getAt(0);
+                        requireSet.add(requireName);
+                    } else {
+                        throw new Exception("NoRequireName", {}, "Require annotation does not have a name provided in file '" + annotationRegistry.getFilePath().getAbsolutePath() + "'");
+                    }
                 }
             });
             return requireSet;
