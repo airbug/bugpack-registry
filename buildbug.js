@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 airbug inc. http://airbug.com
+ *
+ * bugpack-registry may be freely distributed under the MIT license.
+ */
+
+
 //-------------------------------------------------------------------------------
 // Requires
 //-------------------------------------------------------------------------------
@@ -38,7 +45,7 @@ var uglifyjs                = enableModule("uglifyjs");
 
 var version                 = "0.1.7";
 var dependencies            = {
-    bugpack: "0.1.13"
+    bugpack: "0.1.14"
 };
 
 

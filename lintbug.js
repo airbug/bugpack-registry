@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 airbug inc. http://airbug.com
  *
- * bugfs may be freely distributed under the MIT license.
+ * bugpack-registry may be freely distributed under the MIT license.
  */
 
 

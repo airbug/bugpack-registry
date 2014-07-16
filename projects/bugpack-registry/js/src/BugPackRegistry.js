@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 airbug inc. http://airbug.com
+ *
+ * bugpack-registry may be freely distributed under the MIT license.
+ */
+
+
 //-------------------------------------------------------------------------------
 // Annotations
 //-------------------------------------------------------------------------------
@@ -26,16 +33,16 @@ require('bugpack').context("*", function(bugpack) {
     // BugPack
     //-------------------------------------------------------------------------------
 
-    var Class                   = bugpack.require('Class');
-    var DependencyGraph         = bugpack.require('DependencyGraph');
-    var Exception               = bugpack.require('Exception');
-    var IObjectable             = bugpack.require('IObjectable');
-    var List                    = bugpack.require('List');
-    var Map                     = bugpack.require('Map');
-    var Obj                     = bugpack.require('Obj');
-    var Set                     = bugpack.require('Set');
-    var BugFs                   = bugpack.require('bugfs.BugFs');
-    var BugPackKey              = bugpack.require('bugpack-registry.BugPackKey');
+    var Class               = bugpack.require('Class');
+    var DependencyGraph     = bugpack.require('DependencyGraph');
+    var Exception           = bugpack.require('Exception');
+    var IObjectable         = bugpack.require('IObjectable');
+    var List                = bugpack.require('List');
+    var Map                 = bugpack.require('Map');
+    var Obj                 = bugpack.require('Obj');
+    var Set                 = bugpack.require('Set');
+    var BugFs               = bugpack.require('bugfs.BugFs');
+    var BugPackKey          = bugpack.require('bugpack-registry.BugPackKey');
 
 
     //-------------------------------------------------------------------------------

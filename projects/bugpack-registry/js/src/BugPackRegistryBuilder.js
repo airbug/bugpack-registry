@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 airbug inc. http://airbug.com
+ *
+ * bugpack-registry may be freely distributed under the MIT license.
+ */
+
+
 //-------------------------------------------------------------------------------
 // Annotations
 //-------------------------------------------------------------------------------
@@ -6,13 +13,13 @@
 
 //@Require('Class')
 //@Require('Exception')
+//@Require('Flows')
 //@Require('List')
 //@Require('Map')
 //@Require('Obj')
 //@Require('Proxy')
 //@Require('Set')
 //@Require('buganno.BugAnno')
-//@Require('Flows')
 //@Require('bugfs.BugFs')
 //@Require('bugfs.FileFinder')
 //@Require('bugpack-registry.BugPackRegistry')
@@ -29,27 +36,27 @@ require('bugpack').context("*", function(bugpack) {
     // BugPack
     //-------------------------------------------------------------------------------
 
-    var Class                               = bugpack.require('Class');
-    var Exception                           = bugpack.require('Exception');
-    var List                                = bugpack.require('List');
-    var Map                                 = bugpack.require('Map');
-    var Obj                                 = bugpack.require('Obj');
-    var Proxy                               = bugpack.require('Proxy');
-    var Set                                 = bugpack.require('Set');
-    var BugAnno                             = bugpack.require('buganno.BugAnno');
-    var Flows                             = bugpack.require('Flows');
-    var BugFs                               = bugpack.require('bugfs.BugFs');
-    var FileFinder                          = bugpack.require('bugfs.FileFinder');
-    var BugPackRegistry                     = bugpack.require('bugpack-registry.BugPackRegistry');
-    var BugPackRegistryEntry                = bugpack.require('bugpack-registry.BugPackRegistryEntry');
+    var Class                   = bugpack.require('Class');
+    var Exception               = bugpack.require('Exception');
+    var Flows                   = bugpack.require('Flows');
+    var List                    = bugpack.require('List');
+    var Map                     = bugpack.require('Map');
+    var Obj                     = bugpack.require('Obj');
+    var Proxy                   = bugpack.require('Proxy');
+    var Set                     = bugpack.require('Set');
+    var BugAnno                 = bugpack.require('buganno.BugAnno');
+    var BugFs                   = bugpack.require('bugfs.BugFs');
+    var FileFinder              = bugpack.require('bugfs.FileFinder');
+    var BugPackRegistry         = bugpack.require('bugpack-registry.BugPackRegistry');
+    var BugPackRegistryEntry    = bugpack.require('bugpack-registry.BugPackRegistryEntry');
 
 
     //-------------------------------------------------------------------------------
     // Simplify References
     //-------------------------------------------------------------------------------
 
-    var $series                             = Flows.$series;
-    var $task                               = Flows.$task;
+    var $series                 = Flows.$series;
+    var $task                   = Flows.$task;
 
 
     //-------------------------------------------------------------------------------
