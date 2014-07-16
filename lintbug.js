@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 airbug inc. http://airbug.com
  *
- * bugcore may be freely distributed under the MIT license.
+ * bugfs may be freely distributed under the MIT license.
  */
 
 
@@ -36,6 +36,16 @@ var lintbug             = enableModule("lintbug");
 // Lint Tasks
 //-------------------------------------------------------------------------------
 
+lintbug.lintTask("cleanupExtraSpacingAtEndOfLines", function(lintFile, callback) {
+    var fileContents    = lintFile.getFileContents();
+    var lines           = fileContents.split("\n");
+    lines.forEach(function(line, index) {
+        lines[index] = bugcore.StringUtil.rtrim(line);
+    });
+    lintFile.setFileContents(lines.join("\n"));
+    callback();
+});
+
 lintbug.lintTask("ensureNewLineEnding", function(lintFile, callback) {
     var fileContents    = lintFile.getFileContents();
     var lines           = fileContents.split("\n");
@@ -54,7 +64,7 @@ lintbug.lintTask("indentEqualSignsForPreClassVars", function(lintFile, callback)
     var lines           = fileContents.split("\n");
     var startIndex      = bugcore.ArrayUtil.indexOf(lines, /^\s*\/\/ Context\s*$/);
     var endIndex        = bugcore.ArrayUtil.indexOf(lines, /^\s*\/\/ (Declare Class|Declare Interface|Declare Tests|BugYarn)\s*$/);
-    var varRegex        = /^(\s*)var ([\w|\$]+)\s*=(.*)$/;
+    var varRegex        = /^(\s*)var ([\w|\$]+)\s*=(?:\s*)(.*)$/;
     var varObjects      = [];
     var longestIndent   = 0;
     if (startIndex > -1 && endIndex > -1) {
@@ -81,7 +91,7 @@ lintbug.lintTask("indentEqualSignsForPreClassVars", function(lintFile, callback)
         varObjects.forEach(function(varObject) {
             var numberCharsBeforeEquals = longestIndent * indentSpacing;
             var preEqualsText = bugcore.StringUtil.rpad(varObject.indent + "var " + varObject.name, " ", numberCharsBeforeEquals);
-            lines[varObject.index] = preEqualsText + "=" + varObject.afterEqualsContent;
+            lines[varObject.index] = preEqualsText + "= " + varObject.afterEqualsContent;
         });
     }
     lintFile.setFileContents(lines.join("\n"));
