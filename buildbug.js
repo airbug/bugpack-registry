@@ -43,6 +43,7 @@ var uglifyjs                = enableModule("uglifyjs");
 // Values
 //-------------------------------------------------------------------------------
 
+var name                    = "bugpack-registry";
 var version                 = "0.1.7";
 var dependencies            = {
     bugpack: "0.1.14"
@@ -54,12 +55,17 @@ var dependencies            = {
 //-------------------------------------------------------------------------------
 
 buildProperties({
+    name: name,
+    version: version
+});
+
+buildProperties({
     node: {
         packageJson: {
-            name: "bugpack-registry",
-            version: version,
+            name: "{{name}}",
+            version: "{{version}}",
             description: "Registry builder for the bugpack package loader",
-            main: "./scripts/bugpack-registry-node-module.js",
+            main: "./scripts/bugpack-registry-node.js",
             author: "Brian Neisler <brian@airbug.com>",
             dependencies: dependencies,
             repository: {
@@ -77,41 +83,41 @@ buildProperties({
             ]
         },
         sourcePaths: [
-            "../buganno/projects/buganno/js/src",
+            "../buganno/libraries/buganno/js/src",
             "../bugcore/libraries/bugcore/js/src",
-            "../bugfs/projects/bugfs/js/src",
-            "../bugmeta/projects/bugmeta/js/src",
-            "./projects/bugpack-registry/js/src"
+            "../bugfs/libraries/bugfs/js/src",
+            "../bugmeta/libraries/bugmeta/js/src",
+            "./libraries/bugpack-registry/js/src"
         ],
         scriptPaths: [
-            "../buganno/projects/buganno/js/scripts",
+            "../buganno/libraries/buganno/js/scripts",
             "./projects/bugpack-registry-node/js/scripts"
         ],
         readmePath: "./README.md",
         unitTest: {
             packageJson: {
-                name: "bugpack-registry-test",
-                version: version,
-                main: "./scripts/bugpack-registry-node-module.js",
+                name: "{{name}}-test",
+                version: "{{version}}",
+                main: "./scripts/bugpack-registry-node.js",
                 dependencies: dependencies,
                 scripts: {
-                    test: "node ./scripts/bugunit-run.js"
+                    test: "node ./test/scripts/bugunit-run.js"
                 }
             },
             sourcePaths: [
-                "../bugunit/projects/bugdouble/js/src",
-                "../bugunit/projects/bugunit/js/src",
+                "../bugdouble/libraries/bugdouble/js/src",
+                "../bugunit/libraries/bugunit/js/src",
                 "../bugyarn/libraries/bugyarn/js/src"
             ],
             scriptPaths: [
-                "../bugunit/projects/bugunit/js/scripts"
+                "../bugunit/libraries/bugunit/js/scripts"
             ],
             testPaths: [
-                "../buganno/projects/buganno/js/test",
+                "../buganno/libraries/buganno/js/test",
                 "../bugcore/libraries/bugcore/js/test",
-                "../bugfs/projects/bugfs/js/test",
-                "../bugmeta/projects/bugmeta/js/test",
-                "./projects/bugpack-registry/js/test"
+                "../bugfs/libraries/bugfs/js/test",
+                "../bugmeta/libraries/bugmeta/js/test",
+                "./libraries/bugpack-registry/js/test"
             ]
         }
     },
